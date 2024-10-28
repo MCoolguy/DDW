@@ -1,0 +1,83 @@
+from typing import Any
+
+class Stack:
+    def __init__(self) -> None:
+        self.__items: list[Any] = []
+
+        
+    def push(self, item: Any):
+        self.__items.append(item)
+
+    def pop(self) -> Any:
+        if not self.is_empty:
+            return self.__items.pop()
+        return None
+
+    def peek(self) -> Any:
+        if not self.is_empty:
+            return self.__items[-1]
+        return None
+
+    def is_empty(self) -> bool:
+        return len(self.__items) == 0
+
+    def size(self):
+        return len(self.__items)
+
+
+s1: Stack = Stack()
+s1.push(2)
+assert not s1.is_empty
+assert s1.pop() == 2
+assert s1.is_empty
+assert s1.pop() == None
+s1.push(1)
+s1.push(2)
+s1.push(3)
+assert not s1.is_empty
+assert s1._Stack__items == [1, 2, 3]
+assert s1.peek() == 3
+assert s1.size == 3
+ 
+
+class Queue:
+    def __init__(self) -> None:
+        self.left_stack: Stack = Stack()
+        self.right_stack: Stack = Stack()
+
+    def enqueue(self, item: Any) -> None:
+        self.left_stack.push(item)
+
+    def dequeue(self) -> Any:
+        if self.right_stack.is_empty:
+            while not self.left_stack.is_empty:
+                self.right_stack.push(self.left_stack.pop())
+        return self.right_stack.pop()
+
+    def peek(self) -> Any:
+        if self.right_stack.is_empty:
+            while not self.left_stack.is_empty:
+                self.right_stack.push(self.left_stack.pop())
+        return self.right_stack.peek()
+
+    def is_empty(self) -> bool:
+        return self.left_stack.is_empty and self.right_stack.is_empty
+
+    def size(self) -> int:
+        return self.left_stack.size + self.right_stack.size
+
+q1: Queue = Queue()
+q1.enqueue(2)
+assert not q1.is_empty 
+assert q1.size == 1
+assert q1.dequeue() == 2
+assert q1.is_empty
+q1.enqueue(1)
+q1.enqueue(2)
+q1.enqueue(3)
+assert q1.size == 3
+assert q1.peek() == 1
+assert q1.dequeue() == 1
+assert q1.dequeue() == 2
+assert q1.dequeue() == 3
+assert q1.peek() == None
